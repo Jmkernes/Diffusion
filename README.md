@@ -11,7 +11,7 @@ I made this repo in an attempt to better fundamentally understand diffusion mode
 Currently, I would suggest reading the repo in this order:
 
 1. Go to diffusion/ddpm.
-2. Check out the **tutorial.ipynb** file. This contains all of the theory, math, notes and a little bit of code.
+2. Read through the README.md. This contains all of the theory, math, notes and a little bit of code.
 3. Run the code samples. The most important thing is the diffusers.py scheduler. The models, data, and training loop are all generic.
 
 As usual, the requirements.txt file contains everything you would need to run this in a virtual env, conda env, or otherwise. `pip install -r requirements.txt`
@@ -30,4 +30,4 @@ Instead of learning the distribution $p_\theta(x)$, diffusion models learn the s
 
 In the `diffusion/ddpm/main.py` module you'll find a toy script, that will train a diffusion model on the 2D swiss roll dataset. As output, it will generate an animated gif showing how the generated distributions for an ensemble of particles as training progresss. You'll see it gets closer and closer to the true distribution.
 
-The `tutorial.ipynb` has all of the write-up and runs the same stuff as main.py but in notebook form.
+The `tutorial.ipynb` has all of the same stuff as main.py but in notebook form.
