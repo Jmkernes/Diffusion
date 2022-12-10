@@ -16,6 +16,8 @@ Currently, I would suggest reading the repo in this order:
 
 As usual, the requirements.txt file contains everything you would need to run this in a virtual env, conda env, or otherwise. `pip install -r requirements.txt`
 
+You can run the ddpm demo by running `python -m diffusion.ddpm.main`. It will save as output a GIF giving the different sampled distributions of our DDPM over the course of training.
+
 ## Denoising Diffusion Probabilistic Models (DDPM)
 
 In the diffusion/ddpm package, the diffusers.py module contains the Denoising Diffusion Probabilistic Models (DDPM) noise scheduler. Each diffusion technique can be thought of as a mixin or wrapper of a learnable model. It must satisfy the following methods:

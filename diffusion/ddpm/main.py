@@ -17,8 +17,8 @@ from fire import Fire
 from tqdm import tqdm
 from pydantic import BaseModel
 
-from diffusion.diffusers import DDPM
-from diffusion.models import BasicDiscreteModel
+from diffusion.ddpm.diffusers import DDPM
+from diffusion.ddpm.models import BasicDiscreteTimeModel
 
 
 class TrainResult(BaseModel):
@@ -98,7 +98,7 @@ def main(
     seed: int = 42,
 ):
     print("Creating model")
-    model = BasicDiscreteModel(d_model=d_model, n_layers=n_layers)
+    model = BasicDiscreteTimeModel(d_model=d_model, n_layers=n_layers)
     ddpm = DDPM(n_steps=n_steps)
 
     print("Training")

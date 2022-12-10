@@ -78,7 +78,7 @@ class DiscreteTimeResidualBlock(nn.Module):
         return self.norm(x + self.lin2(self.act(self.lin1(x + self.emb(t)))))
 
 
-class BasicDiscreteModel(nn.Module):
+class BasicDiscreteTimeModel(nn.Module):
     def __init__(self, d_model: int = 128, n_layers: int = 2):
         super().__init__()
         self.d_model = d_model
