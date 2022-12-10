@@ -10,7 +10,7 @@ The main idea behind diffusion models is that instead of learning the distributi
 
 This is the first question you should ask, and the answer is: because it's hard. It's hard for the same reasons that QFT, statistical mechanics, and modern condensed matter theory are hard. Normalization constants. The idea behind gradient based optimization problems is pretty simple. Pick a big function with lots of parameters, feed it a target, and optimize. The problem, is that an arbitrary function generator will not naturally spit out probability distributions. Distributions need to obey $\int p(x) dx = 1$, which is not invariant under gradient descent (at least naturally it isn't).
 
-> If that's too abstract, let's say you wanted to train a model to learn the bias of a coin. You flip it 10 times and get 8 heads and 2 tails. The model can be specified by probability of heads, $\theta$, and written as $(\theta, 1 - \theta)$. Gradient updates would be symmetric and obey normalization, provided that $\theta$ stays within $[0, 1]$. Instead let's make this an _unconstrained_ problem, and also parametrize the redundant probability of tails such that the model is now $(\theta_1, \theta_2)$. If we start at $\theta_1 = \theta_2 = 0.5$, it's possible that after one update we might have $\theta_1 = 0.6$, $\theta_2 = 0.49$, which does not satisfy a normalized probability ($\theta_1 + \theta_2 \neq 1$).
+> If that's too abstract, let's say you wanted to train a model to learn the bias of a coin. You flip it 10 times and get 8 heads and 2 tails. The model can be specified by probability of heads, $\theta$, and written as $(\theta, 1 - \theta)$. Gradient updates would be symmetric and obey normalization, provided that $\theta$ stays within $[0, 1]$. Instead let's make this an _unconstrained_ problem, and also parametrize the redundant probability of tails such that the model is now $(\theta_1, \theta_2)$. If we start at $\theta_1 = \theta_2 = 0.5$, it's possible that after one update we might have $\theta_1 = 0.6$, $\theta_2 = 0.49$, which does not satisfy a normalized probability ($\theta_1 + \theta_2 != 1$).
 
 ### EBMs
 
@@ -80,7 +80,8 @@ Each has its strengths and weaknesses. We will find Langevins are good for gener
 The Langevin equation is just an over-damped equation of motion plus some random, time-independent gaussian noise $\eta(t)$
 
 $$
-\frac{dx}{dt} + \nabla V = \eta(t), \;\;\; p(\eta) \sim e^{-\eta^2 / 4D}
+\frac{dx}{dt} + \nabla V = \eta(t), \\
+p(\eta) \sim e^{-\eta^2 / 4D}
 $$
 
 In discrete form, it would look like:
@@ -196,7 +197,8 @@ which is the desired result. We've shown that for every Langevin equation, there
 Now that we know the connection between Langevin and Fokker-Planck equations, consider what happens if we set the potential energy to $V(x) = -\ln q_\theta(x)$, and the diffusion constant to $D=1$. The corresponding Langevin equation would be:
 
 $$
-x_t = x_{t-1} + \epsilon  \nabla_x  \ln q_\theta(x) + \sqrt{2\epsilon} z, \;\;\; z \sim N(0, 1)
+x_t = x_{t-1} + \epsilon  \nabla_x  \ln q_\theta(x) + \sqrt{2\epsilon} z, \\
+z \sim N(0, 1)
 $$
 
 The stationary solution $e^{-V}$ now becomes $q_\theta(x)$! We've shown we can generate samples from any distribution $q_\theta(x)$, by using the above Langevin equation.
