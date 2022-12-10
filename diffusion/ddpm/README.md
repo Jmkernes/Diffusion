@@ -244,13 +244,13 @@ $$
 where the approximation is standard in ML. Equality is approached for sufficiently many i.i.d. samples from $\mathcal{D}$. At this stage, you may ask, "Why not just parametrize $p_0(x_0; \theta)$ and minimize this loss?" The answer is that doing so would require a normalizing constant, which means we are directly estimating the data distribution and we are right back where we started. Instead, we make insight (1): **The markov assumption allows us to escape the normalization issue, by rewriting the intractable distribution $p_0(x)$ as a product of normalized transition probabilities**. However, this will come at the expense of introducing additional complexity in the form of latent states $x_t, x_{t-1}, \ldots, x_1$ that will need to be integrated out. Let's get to work now on this and we will find that we are forced to make several choices.
 
 $$
-\ln p_0(x_0; \theta) = \ln\left\{\int dx_{1:T} \,p(x0, \ldots, x_T)\right\} = \ln  \left\{\int dx_{1:T}\, p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta)\right\}
+\ln p_0(x_0; \theta) = \ln\left\lbrace\int dx_{1:T} \,p(x0, \ldots, x_T)\right\rbrace = \ln  \left\lbrace\int dx_{1:T}\, p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta)\right\rbrace
 $$
 
 Clearly the integrals are a problem. We don't have any way to evaluate these. To circumvent this, we apply our usual trick of replacing integrals with Monte-Carlo estimates. But, we now need a distribution that gives a probability for all times $0 < t < T$ that are sampled! This is where the forward process comes into play. We need to engineer a distribution that is cheap and easy to sample for all of the data points, as well as analytically tractable. It turns out, that we can build this using the same method as for the backward process -- assume that the distribution is Markov. We will add a resolution of unity $q(x_{0:T}) / q(x_{0:T})$ and simplify a bit using the Markov representation
 
 $$
-\ln p_0(x_0; \theta) = \ln  \left\{\int dx_{1:T}\, q(x_{1:T} | x_0) \left(p_T(x_T)\prod_{t=1}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_t | x_{t-1})}\right)\right\}
+\ln p_0(x_0; \theta) = \ln  \left\lbrace\int dx_{1:T}\, q(x_{1:T} | x_0) \left(p_T(x_T)\prod_{t=1}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_t | x_{t-1})}\right)\right\rbrace
 $$
 
 We have also made use of Bayes rule to write $q(x_{0:T}) = q(x_{1:T} | x_0)q(x_0)$ and omit the final $q_0(x_0)$ in our resolution of unity. Instead of directly estimating this with sampling though, we will instead apply a variational bound argument and optimize an approximate loss. In short, this means that we can move the $\ln$ inside the integral and past the distribution $q(x_{1:T} | x_0)$. For a small proof, see the note below.
@@ -324,13 +324,13 @@ $$
 The $q(x_{1} | x_0)$ term cancels with the denominator of the last term in the previous expression. We are now currently at:
 
 $$
-K = \int dx_{1:T}\, q(x_{1:T} | x_0) \left\{\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\}
+K = \int dx_{1:T}\, q(x_{1:T} | x_0) \left\lbrace\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\rbrace
 $$
 
 At this point, the DDPM paper does a better job of simplication. If we recall, the loss was $\int q_0(x_0) K dx_0$, which amounts to just replacing the {1:T} with {0:T} in the integrand differential. Let's quickly do this and then we are at equation A.21 in the DDPM (Ho 2020) paper.
 
 $$
-\text{ELBO} = \int dx_{0:T}\, q(x_{0:T}) \left\{\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\}
+\text{ELBO} = \int dx_{0:T}\, q(x_{0:T}) \left\lbrace\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\rbrace
 $$
 
 Since integrating over an unused variable $x_t$ does nothing (i.e. it's just 1 since $q$ is a probability distribution), we can eliminate all the un-needed variables, which leads to the result
@@ -422,13 +422,13 @@ q(x_{t-1} | x_t, x_0) = q(x_{t} | x_{t-1})\frac{q(x_{t-1} | x_0)}{q(x_t | x_0)} 
 $$
 
 $$
-\ln q(x_{t-1} | x_t, x_0) = \frac{1}{2}\left\{\frac{(x_t - \sqrt{\alpha_{t}}x_{t-1})^2}{(1 - \alpha_{t})} + \frac{(x_{t-1} - \sqrt{\bar  \alpha_{t-1}}x_{0})^2}{(1 -\bar  \alpha_{t-1})} - \frac{(x_t - \sqrt{\bar\alpha_{t}}x_{0})^2}{(1 -\bar  \alpha_{t})}\right\}
+\ln q(x_{t-1} | x_t, x_0) = \frac{1}{2}\left\lbrace\frac{(x_t - \sqrt{\alpha_{t}}x_{t-1})^2}{(1 - \alpha_{t})} + \frac{(x_{t-1} - \sqrt{\bar  \alpha_{t-1}}x_{0})^2}{(1 -\bar  \alpha_{t-1})} - \frac{(x_t - \sqrt{\bar\alpha_{t}}x_{0})^2}{(1 -\bar  \alpha_{t})}\right\rbrace
 $$
 
 Keeping only terms containing $x_{t-1}$ gives:
 
 $$
-\ln q(x_{t-1} | x_t, x_0) = \frac{1}{2}\left\{
+\ln q(x_{t-1} | x_t, x_0) = \frac{1}{2}\left\lbrace
 \left(
 \frac{\alpha_{t}}{(1 - \alpha_{t})} +
 \frac{1}{(1 - \bar  \alpha_{t-1})}
@@ -436,19 +436,19 @@ $$
 2\left(
 \frac{\sqrt{\alpha_{t}} x_t}{(1 - \alpha_{t})} +
 \frac{\sqrt{\bar  \alpha_{t-1}} x_0}{(1 - \bar  \alpha_{t-1})}
-\right) x_{t-1} \right\} +
+\right) x_{t-1} \right\rbrace +
 \text{const}
 $$
 
 Let's deal with simplifying the $x_{t-1}^2$ term first. This can be simplified to $\frac{1 - \bar  \alpha_t}{(1-\alpha_t)(1-\bar\alpha_{t-1})}$. Pulling this out gives:
 
 $$
-\ln q(x_{t-1} | x_t, x_0) = \frac{1}{2}\frac{1 - \bar  \alpha_t}{(1-\alpha_t)(1-\bar\alpha_{t-1})}\left\{
+\ln q(x_{t-1} | x_t, x_0) = \frac{1}{2}\frac{1 - \bar  \alpha_t}{(1-\alpha_t)(1-\bar\alpha_{t-1})}\left\lbrace
 x_{t-1}^2 +
 2\left(
 \frac{(1-\bar  \alpha_{t-1})\sqrt{\alpha_t}}{(1 - \bar  \alpha_{t})} x_t +
 \frac{(1-\alpha_t)\sqrt{\bar  \alpha_{t-1}} x_0}{1 - \bar  \alpha_t}
-x_{0}\right) \right\} +
+x_{0}\right) \right\rbrace +
 \text{const}
 $$
 
