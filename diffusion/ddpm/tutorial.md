@@ -699,6 +699,49 @@ $$
 \partial_t p_\text{rev}(x, t) = -f(x,t)\partial_x p_\text{rev}(x, t) - g^2  \partial_x^2 p_\text{rev}(x, t)
 $$
 
+## Equivalence of score-based models and diffusion models
+
+Consider the simplest process we can write:
+
+$$
+dx = g(t) dB.
+$$
+
+These leads to a Fokker-Planck equation $\partial_t P = g^2(t) \nabla^2 P$, which has solution $\text{exp}(-(x-x')^2 / \int g^2(t)dt)$. Let's choose $g(t) = \sigma^t$. Integrating, we get variance $\text{Var}(t) = \frac{1}{2\ln \sigma}(\sigma^{2t} - 1)$ This defines a forward process transition probability:
+
+$$
+q(x(t) | x(0)) = \mathcal{N}\left(x(t)| x(0), \frac{\sigma^{2t} - 1}{2\ln \sigma}\right )
+$$
+
+Which can be evaluated at any time $t$. Note, that as $t \to \infty$, the variance explodes. Yang refers to these types of SDEs as **Variance Exploding (VE)** solutions. Yang then puts forth the following score matching objective
+
+$$
+L = \frac{1}{2} \mathbb{E}_{x \sim q(x|x_0), x_0 \sim p_\text{data}(x_0)}
+\left[
+  ||s_\theta(x) - \nabla \ln q(x | x_0) ||^2
+\right]
+$$
+
+This is really similar to the one given by Jascha, Ho, etc., except that those guys use $q(x_{t-1} | x_t, x_0)$. Instead, we will show that the above is equivalent to the score-matching objective (i.e. $p(x)$ instead of $q(x|x')$ in the log). And, since we know there exists a langevin that can produce samples given the score, everything is just fine. The proof is actually not too bad, and comes from the appendix of
+
+<cite>P. Vincent. A connection between score matching and denoising autoencoders. Neural computation, 23(7):1661–1674, 2011.</cite> [link]https://arxiv.org/pdf/1907.05600.pdf
+
+Begin with the score matching objective, for some parametrizable function $s_\theta(x)$
+
+$$
+L = \frac{1}{2} \mathbb{E}_{x \sim p(x)} \left[||s_\theta(x) - \nabla \ln p(x)||^2\right] \\
+L = \frac{1}{2}\int dx p(x) ||s_\theta(x) - \nabla \ln p(x)||^2 \\
+L = \frac{1}{2}\int dx p(x) ||s_\theta(x)||^2  - 2 \int dx p(x) s_\theta(x) \nabla \ln p(x) + \text{const} \\
+L = \frac{1}{2}\int dx p(x) ||s_\theta(x)||^2  - 2 \int dx s_\theta(x) \nabla p(x) + \text{const} \\
+L = \frac{1}{2}\int dx p(x) ||s_\theta(x)||^2  - 2 \int dx dx' s_\theta(x) p(x')\nabla p(x|x') + \text{const} \\
+L = \frac{1}{2}\int dx p(x) ||s_\theta(x)||^2  - 2 \int dx dx' s_\theta(x) p(x|x')p(x')\nabla \ln p(x|x') + \text{const} \\
+L = \frac{1}{2}\int dx p(x) ||s_\theta(x)||^2  - 2 \int dx dx' s_\theta(x) p(x, x')\nabla \ln p(x|x') + \text{const} \\
+L = \frac{1}{2}\int dx dx' p(x, x')||s_\theta(x) - \nabla \ln p(x|x')||^2 \\
+L = \frac{1}{2}\mathbb{E}_{(x, x') \sim p(x, x')} \left[||s_\theta(x) - \nabla \ln p(x|x')||^2\right]
+$$
+
+when the transition kernel is gaussian, the final and initial positions cancel out after reparametrization, leaving only the noise for the score to match on $\approx \sigma_t^2 s_\theta(x, t) = \epsilon$
+
 # The End
 
 That wraps up diffusion models. There are lots of cool things to continue studying though. Supervised learning is one area, whereby we can push to reconstruct certain solutions. Class-conditioned generation is another, where we ask the model to generate samples from a given class. We can also consider multi-modality diffusion, which is used for making those really cool text-to-image generators.
