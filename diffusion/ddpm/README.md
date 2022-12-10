@@ -131,13 +131,13 @@ Notice, that this fits the form of our Gaussian transition kernel postulated ear
 Just to make things look familiar, here is the transition kernel equation written in the usual bra-ket notation:
 
 $$
-p(x, t+ \epsilon) = \int dx'' \langle x | \hat T(\epsilon) | x'' \rangle p(x'', t), \,\,\, \langle x | \hat T(\epsilon) | x'' \rangle  \sim e^{-(x_t - x_{t-1} - \epsilon F_{t-1})^2  \epsilon / 4D}
+p(x, t+ \epsilon) = \int dx'' \langle x | \hat T(\epsilon) | x'' \rangle p(x'', t), \ \;\\ \;\\ \;\ \langle x | \hat T(\epsilon) | x'' \rangle  \sim e^{-(x_t - x_{t-1} - \epsilon F_{t-1})^2  \epsilon / 4D}
 $$
 
 This is in standard form, and so we can immediately write the path integral
 
 $$
-p(x_f, t) = \int_{x(0) = x_i}^{x(t) = x_f} \mathcal{D} x\, \text{exp}\left[ \frac{-1}{4D} \int_0^t(\dot x^2 + \nabla V(x))^2d\tau\right] p(x_i, 0)
+p(x_f, t) = \int_{x(0) = x_i}^{x(t) = x_f} \mathcal{D} x\ \;\ \text{exp}\left[ \frac{-1}{4D} \int_0^t(\dot x^2 + \nabla V(x))^2d\tau\right] p(x_i, 0)
 $$
 
 As is usual with path integrals, if we discretize them we get a chain of transition operators, which is equivalent to a Markov chain of conditional probabilities $q_t(x_t) = \int  \prod_{i=1}^{t} dx_{i-1} q_i(x_i | x_{i-1})$
@@ -163,7 +163,7 @@ $$
 In order to make use of the Langevin equation, we'll need to make two assumptions about the noise. (1) impose that the second moment is proportional to the time difference between events, and (2) that events are time-independent, i.e. $\langle \eta_i \eta_j \rangle \sim \delta_{ij} dt^{>0}$. With this, we can can infer the averages:
 
 $$
-dx = -\nabla V dt + d\eta, \,\, dx^2 = d \eta^2 + \mathcal{O}(dt^{>1})
+dx = -\nabla V dt + d\eta, \ \;\\ \;\ dx^2 = d \eta^2 + \mathcal{O}(dt^{>1})
 $$
 
 As a result, we can find the averaged time differential
@@ -231,11 +231,11 @@ We'll start off with the paper Deep unsupervised learning using nonequilibrium t
 
 **Forward (destructive) process**
 
-$$q(x_0, \ldots, x_T) = q_0(x_0)\prod_{t=1}^T q(x_t | x_{t-1}), \,\\ q_0(x) = p_\text{data}(x)$$
+$$q(x_0, \ldots, x_T) = q_0(x_0)\prod_{t=1}^T q(x_t | x_{t-1}), \ \;\\\ q_0(x) = p_\text{data}(x)$$
 
 **Backard (generative) process**
 
-$$p(x_0, \ldots, x_T; \theta) = p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta), \,\\ p_T(x) = \mathcal{N}(0, 1)$$
+$$p(x_0, \ldots, x_T; \theta) = p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta), \ \;\\\ p_T(x) = \mathcal{N}(0, 1)$$
 
 This says that the destructive process samples its initial condition from the observed data, and the constructive process samples its initial (long time) condition from pure noise. Our goal is to maximize the log-likelihood that the generative distribution produced the given data
 
@@ -246,13 +246,13 @@ $$
 where the approximation is standard in ML. Equality is approached for sufficiently many i.i.d. samples from $\mathcal{D}$. At this stage, you may ask, "Why not just parametrize $p_0(x_0; \theta)$ and minimize this loss?" The answer is that doing so would require a normalizing constant, which means we are directly estimating the data distribution and we are right back where we started. Instead, we make insight (1): **The markov assumption allows us to escape the normalization issue, by rewriting the intractable distribution $p_0(x)$ as a product of normalized transition probabilities**. However, this will come at the expense of introducing additional complexity in the form of latent states $x_t, x_{t-1}, \ldots, x_1$ that will need to be integrated out. Let's get to work now on this and we will find that we are forced to make several choices.
 
 $$
-\ln p_0(x_0; \theta) = \ln\left\lbrace\int dx_{1:T} \,p(x0, \ldots, x_T)\right\rbrace = \ln  \left\lbrace\int dx_{1:T}\, p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta)\right\rbrace
+\ln p_0(x_0; \theta) = \ln\left\lbrace\int dx_{1:T} \ \;\p(x0, \ldots, x_T)\right\rbrace = \ln  \left\lbrace\int dx_{1:T}\ \;\ p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta)\right\rbrace
 $$
 
 Clearly the integrals are a problem. We don't have any way to evaluate these. To circumvent this, we apply our usual trick of replacing integrals with Monte-Carlo estimates. But, we now need a distribution that gives a probability for all times $0 < t < T$ that are sampled! This is where the forward process comes into play. We need to engineer a distribution that is cheap and easy to sample for all of the data points, as well as analytically tractable. It turns out, that we can build this using the same method as for the backward process -- assume that the distribution is Markov. We will add a resolution of unity $q(x_{0:T}) / q(x_{0:T})$ and simplify a bit using the Markov representation
 
 $$
-\ln p_0(x_0; \theta) = \ln  \left\lbrace\int dx_{1:T}\, q(x_{1:T} | x_0) \left(p_T(x_T)\prod_{t=1}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_t | x_{t-1})}\right)\right\rbrace
+\ln p_0(x_0; \theta) = \ln  \left\lbrace\int dx_{1:T}\ \;\ q(x_{1:T} | x_0) \left(p_T(x_T)\prod_{t=1}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_t | x_{t-1})}\right)\right\rbrace
 $$
 
 We have also made use of Bayes rule to write $q(x_{0:T}) = q(x_{1:T} | x_0)q(x_0)$ and omit the final $q_0(x_0)$ in our resolution of unity. Instead of directly estimating this with sampling though, we will instead apply a variational bound argument and optimize an approximate loss. In short, this means that we can move the $\ln$ inside the integral and past the distribution $q(x_{1:T} | x_0)$. For a small proof, see the note below.
@@ -302,13 +302,13 @@ $$
 Moving on, we make the Evidence Lower Bound (ELBO) approximation:
 
 $$
-\ln p_0(x_0; \theta) \geq K = \int dx_{1:T}\, q(x_{1:T} | x_0) \ln  \left(p_T(x_T)\prod_{t=1}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_t | x_{t-1})}\right)
+\ln p_0(x_0; \theta) \geq K = \int dx_{1:T}\ \;\ q(x_{1:T} | x_0) \ln  \left(p_T(x_T)\prod_{t=1}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_t | x_{t-1})}\right)
 $$
 
 Which is great because now we can tackle that product. What we want to do though, is reverse the arguments such that the forward process looks like the backward process, i.e. we want to somehow swap $q(t| t-1) \to q(t-1| t)$. This is not exactly easy, because from bayes rule we know $q(x_t | x_{t-1}) = q(x_{t-1} | x_t) q(x_t) / q(x_{t-1})$, which requires integrating the entire markov chain up to time $t$ (note, that also includes integrating out the $x_0$ component eek!). However, recall the other end of the chain is $p_0(x_0)$ which cannot be integrated over, since it is observed empirically! So it seems we are a little screwed. Thankfully, it's not that bad, since we can make use of the fact that we actually know $x_0$ for any given sample. The _conditional_ probability $p(x_{t} | x_{t-1}, x_0)$ _is_ invertible, since it would lead to $p(x_t | x_0)$ and $p(x_{t-1} | x_0)$ which is all gooood. Let's now go about our task of inverting all of the probabilities that we can. We need to pull out the 0th component though first, so we now have:
 
 $$
-K = \int dx_{1:T}\, q(x_{1:T} | x_0) \ln  \left(p_T(x_T)\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta) q(x_{t-1} | x_0)}{q(x_{t-1} | x_t, x_0) q(x_t | x_0)}\right) + \ln\left(\frac{p(x_0 | x_1)}{q(x_1 | x_0)}\right)
+K = \int dx_{1:T}\ \;\ q(x_{1:T} | x_0) \ln  \left(p_T(x_T)\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta) q(x_{t-1} | x_0)}{q(x_{t-1} | x_t, x_0) q(x_t | x_0)}\right) + \ln\left(\frac{p(x_0 | x_1)}{q(x_1 | x_0)}\right)
 $$
 
 The term
@@ -326,19 +326,19 @@ $$
 The $q(x_{1} | x_0)$ term cancels with the denominator of the last term in the previous expression. We are now currently at:
 
 $$
-K = \int dx_{1:T}\, q(x_{1:T} | x_0) \left\lbrace\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\rbrace
+K = \int dx_{1:T}\ \;\ q(x_{1:T} | x_0) \left\lbrace\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\rbrace
 $$
 
 At this point, the DDPM paper does a better job of simplication. If we recall, the loss was $\int q_0(x_0) K dx_0$, which amounts to just replacing the {1:T} with {0:T} in the integrand differential. Let's quickly do this and then we are at equation A.21 in the DDPM (Ho 2020) paper.
 
 $$
-\text{ELBO} = \int dx_{0:T}\, q(x_{0:T}) \left\lbrace\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\rbrace
+\text{ELBO} = \int dx_{0:T}\ \;\ q(x_{0:T}) \left\lbrace\ln  \left(\frac{p_T(x_T)}{q(x_T | x_0)}\right) + \ln  \left(\prod_{t=2}^T \frac{p(x_{t-1} | x_t; \theta)}{q(x_{t-1} | x_t, x_0)}\right) + \ln p(x_0 | x_1)\right\rbrace
 $$
 
 Since integrating over an unused variable $x_t$ does nothing (i.e. it's just 1 since $q$ is a probability distribution), we can eliminate all the un-needed variables, which leads to the result
 
 $$
-\text{ELBO} = D_\text{KL}(p_T(x_T) || q(x_T | x_0)) + \sum_{t=2}^T D_\text{KL}(p(x_{t-1} | x_t; \theta)|| q(x_{t-1} | x_t, x_0)) + \int dx_1 dx_0\, q(x_1, x_0) \ln p(x_0 | x_1)
+\text{ELBO} = D_\text{KL}(p_T(x_T) || q(x_T | x_0)) + \sum_{t=2}^T D_\text{KL}(p(x_{t-1} | x_t; \theta)|| q(x_{t-1} | x_t, x_0)) + \int dx_1 dx_0\ \;\ q(x_1, x_0) \ln p(x_0 | x_1)
 $$
 
 ### The forward path
@@ -350,7 +350,7 @@ By definition, the forward destructive process does not contain learnable parame
 The nice thing about general solutions is they tend to be shorter, so we'll show the Yang answer first. We adopt the SDE method of Yang et. al., and describe the forward process via a stochastic equation, whose solution can be analytically computed. The key feature, is that we must be able to quickly and efficiently compute the probabilities $q(x_{t-1}|x_{t}, x_0)$. To that end, we shall consider all stochastic processes in the following family:
 
 $$
-dx = \alpha(t) \, dt + \beta(t) \, dw
+dx = \alpha(t) \ \;\ dt + \beta(t) \ \;\ dw
 $$
 
 It obeys the corresponding Fokker-Planck equation
@@ -374,7 +374,7 @@ $$
 To reproduce DDPM, we choose the stochastic process:
 
 $$
-dx = -\frac{1}{2}\beta(t) \, dt + \sqrt{\beta(t)} \, dw
+dx = -\frac{1}{2}\beta(t) \ \;\ dt + \sqrt{\beta(t)} \ \;\ dw
 $$
 
 #### Discrete
@@ -384,7 +384,7 @@ This section follows the approach of DDPM. This is the IMO the most math heavy s
 We're interested in minimizing:
 
 $$
-\text{ELBO} = D_\text{KL}(p_T(x_T) || q(x_T | x_0)) + \sum_{t=2}^T D_\text{KL}(p(x_{t-1} | x_t; \theta)|| q(x_{t-1} | x_t, x_0)) + \int dx_1 dx_0\, q(x_1, x_0) \ln p(x_0 | x_1),
+\text{ELBO} = D_\text{KL}(p_T(x_T) || q(x_T | x_0)) + \sum_{t=2}^T D_\text{KL}(p(x_{t-1} | x_t; \theta)|| q(x_{t-1} | x_t, x_0)) + \int dx_1 dx_0\ \;\ q(x_1, x_0) \ln p(x_0 | x_1),
 $$
 
 for some ordered schedule of times $0 < t_1 < \ldots < t_t < 1$, where time moves from ordered to disordered. We will assume (remember all the gaussian stuff we did in the opening part of these notes?) that we can represent the transition kernels as Gaussians
@@ -407,7 +407,7 @@ $$
 x_1 = \sqrt{\alpha_1} x_0 + \sqrt{1 - \alpha_1} z_0 \\
 x_2 = \sqrt{\alpha_2} x_1 + \sqrt{1 - \alpha_2} z_1 \\
 \implies x_2 = \sqrt{\alpha_1 \alpha_2} x_0 + \sqrt{\alpha_2(1-\alpha_1)} z_0 + \sqrt{1-\alpha_2} z_1 \\
-\implies  \langle x_2  \rangle = \sqrt{\alpha_1 \alpha_2} x_0, \,\,\, \langle x_2^2  \rangle_c = 1 - \alpha_1 \alpha_2
+\implies  \langle x_2  \rangle = \sqrt{\alpha_1 \alpha_2} x_0, \ \;\\ \;\\ \;\ \langle x_2^2  \rangle_c = 1 - \alpha_1 \alpha_2
 $$
 
 We can be more formal and do a proof by induction, but it becomes clear that we have the following closed form:
@@ -625,7 +625,7 @@ Specifically, given a forward process
 
 $$
 \begin{equation}
-dx = f(x, t) dt + g(t) dB, \,\,\, \langle dB^2  \rangle = dt
+dx = f(x, t) dt + g(t) dB, \ \;\\ \;\\ \;\ \langle dB^2  \rangle = dt
 \end{equation}
 $$
 
@@ -633,7 +633,7 @@ There exists a backward process
 
 $$
 \begin{equation}
-dx = \left[f(x, t) - g^2(t) \nabla_x  \log p(x|t)\right] dt + g(t)\, dB
+dx = \left[f(x, t) - g^2(t) \nabla_x  \log p(x|t)\right] dt + g(t)\ \;\ dB
 \end{equation}
 $$
 
@@ -678,13 +678,13 @@ $$
 Taking a time derivative of view (1) and setting it equal to a time derivative of view (2) with the above substituted in for $\partial_t F$, we get the integral equation:
 
 $$
-\int F(x) \partial_t p(x, t) dx = \int dx\, p(x) \left[\frac{\partial F}{\partial x} f(x, t) + \frac{1}{2} \frac{\partial^2 F}{\partial x^2} g^2\right]
+\int F(x) \partial_t p(x, t) dx = \int dx\ \;\ p(x) \left[\frac{\partial F}{\partial x} f(x, t) + \frac{1}{2} \frac{\partial^2 F}{\partial x^2} g^2\right]
 $$
 
 Finally, we integrate by parts to find:
 
 $$
-\int F(x) \partial_t p(x, t) dx = \int dx\, F(x) \left[\partial_x(-f(x, t) p(x, t)) + \partial_x^2 (g^2 p(x, t)))\right]
+\int F(x) \partial_t p(x, t) dx = \int dx\ \;\ F(x) \left[\partial_x(-f(x, t) p(x, t)) + \partial_x^2 (g^2 p(x, t)))\right]
 $$
 
 Since this must hold for any abitrary function $F(x)$, it must hold within the integrals as well, leading to the FP equation:
