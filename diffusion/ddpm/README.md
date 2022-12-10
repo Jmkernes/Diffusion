@@ -131,7 +131,7 @@ Notice, that this fits the form of our Gaussian transition kernel postulated ear
 Just to make things look familiar, here is the transition kernel equation written in the usual bra-ket notation:
 
 $$
-p(x, t+ \epsilon) = \int dx'' \langle x | \hat T(\epsilon) | x'' \rangle p(x'', t), \;\;\; \langle x | \hat T(\epsilon) | x'' \rangle  \sim e^{-(x_t - x_{t-1} - \epsilon F_{t-1})^2  \epsilon / 4D}
+p(x, t+ \epsilon) = \int dx'' \langle x | \hat T(\epsilon) | x'' \rangle p(x'', t), \,\,\, \langle x | \hat T(\epsilon) | x'' \rangle  \sim e^{-(x_t - x_{t-1} - \epsilon F_{t-1})^2  \epsilon / 4D}
 $$
 
 This is in standard form, and so we can immediately write the path integral
@@ -163,7 +163,7 @@ $$
 In order to make use of the Langevin equation, we'll need to make two assumptions about the noise. (1) impose that the second moment is proportional to the time difference between events, and (2) that events are time-independent, i.e. $\langle \eta_i \eta_j \rangle \sim \delta_{ij} dt^{>0}$. With this, we can can infer the averages:
 
 $$
-dx = -\nabla V dt + d\eta, \;\; dx^2 = d \eta^2 + \mathcal{O}(dt^{>1})
+dx = -\nabla V dt + d\eta, \,\, dx^2 = d \eta^2 + \mathcal{O}(dt^{>1})
 $$
 
 As a result, we can find the averaged time differential
@@ -231,11 +231,11 @@ We'll start off with the paper Deep unsupervised learning using nonequilibrium t
 
 **Forward (destructive) process**
 
-$$q(x_0, \ldots, x_T) = q_0(x_0)\prod_{t=1}^T q(x_t | x_{t-1}), \;\;\; q_0(x) = p_\text{data}(x)$$
+$$q(x_0, \ldots, x_T) = q_0(x_0)\prod_{t=1}^T q(x_t | x_{t-1}), \,\\ q_0(x) = p_\text{data}(x)$$
 
 **Backard (generative) process**
 
-$$p(x_0, \ldots, x_T; \theta) = p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta), \;\;\; p_T(x) = \mathcal{N}(0, 1)$$
+$$p(x_0, \ldots, x_T; \theta) = p_T(x_T)\prod_{t=1}^T p(x_{t-1} | x_t; \theta), \,\\ p_T(x) = \mathcal{N}(0, 1)$$
 
 This says that the destructive process samples its initial condition from the observed data, and the constructive process samples its initial (long time) condition from pure noise. Our goal is to maximize the log-likelihood that the generative distribution produced the given data
 
@@ -407,7 +407,7 @@ $$
 x_1 = \sqrt{\alpha_1} x_0 + \sqrt{1 - \alpha_1} z_0 \\
 x_2 = \sqrt{\alpha_2} x_1 + \sqrt{1 - \alpha_2} z_1 \\
 \implies x_2 = \sqrt{\alpha_1 \alpha_2} x_0 + \sqrt{\alpha_2(1-\alpha_1)} z_0 + \sqrt{1-\alpha_2} z_1 \\
-\implies  \langle x_2  \rangle = \sqrt{\alpha_1 \alpha_2} x_0, \;\;\; \langle x_2^2  \rangle_c = 1 - \alpha_1 \alpha_2
+\implies  \langle x_2  \rangle = \sqrt{\alpha_1 \alpha_2} x_0, \,\,\, \langle x_2^2  \rangle_c = 1 - \alpha_1 \alpha_2
 $$
 
 We can be more formal and do a proof by induction, but it becomes clear that we have the following closed form:
@@ -625,7 +625,7 @@ Specifically, given a forward process
 
 $$
 \begin{equation}
-dx = f(x, t) dt + g(t) dB, \;\;\; \langle dB^2  \rangle = dt
+dx = f(x, t) dt + g(t) dB, \,\,\, \langle dB^2  \rangle = dt
 \end{equation}
 $$
 
